@@ -15,9 +15,12 @@ type CameraScreenProps = {
   route: RouteProp<ScreenStack, 'Camera'>;
 };
 
+const resource = "https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v2/1/default/1";
+
 export const CameraScreen = ({navigation}: CameraScreenProps) => {
   const ref = useRef<Camera>(null);
 
+  const [graph, setGraph] = useState<any>(null);
   const [permission, setPermission] = useState<boolean | null>(null);
   const [pressed, setPressed] = useState<boolean>(false);
   const [ready, setReady] = useState<boolean>(false);
@@ -51,7 +54,26 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
       })
       .then(() => {
         setReady(!ready);
+      });
+
+    const open = async () => {
+      const options = {
+        fromTFHub: true,
+        onProgress: (fraction: number) => {
+          console.log(fraction);
+        }
+      };
+
+      return await tensorflow.loadGraphModel(resource, options);
+    };
+
+    open()
+      .then((graph) => {
+        setGraph(graph);
       })
+      .catch((error) => {
+        console.log(error)
+      });
   }, []);
 
   useEffect(() => {
