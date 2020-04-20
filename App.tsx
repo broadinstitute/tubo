@@ -8,7 +8,7 @@ import {CameraCapturedPicture} from "expo-camera";
 
 export type ScreenStack = {
   Camera: undefined;
-  Image: { src: CameraCapturedPicture }
+  Image: { photo: CameraCapturedPicture }
 };
 
 const Stack = createStackNavigator<ScreenStack>();
@@ -18,7 +18,7 @@ export const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Camera">
         <Stack.Screen name="Camera" component={CameraScreen} />
-        <Stack.Screen name="Image" component={ImageScreen} initialParams={{ src: undefined }}/>
+        <Stack.Screen name="Image" component={ImageScreen} initialParams={{ photo: undefined }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

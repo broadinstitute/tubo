@@ -7,13 +7,22 @@ target 'tube' do
   rnPrefix = "../node_modules/react-native"
 
   # React Native and its dependencies
+  pod 'DoubleConversion', :podspec => "#{rnPrefix}/third-party-podspecs/DoubleConversion.podspec"
   pod 'FBLazyVector', :path => "#{rnPrefix}/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "#{rnPrefix}/Libraries/FBReactNativeSpec"
+  pod 'Folly', :podspec => "#{rnPrefix}/third-party-podspecs/Folly.podspec"
+  pod 'glog', :podspec => "#{rnPrefix}/third-party-podspecs/glog.podspec"
   pod 'RCTRequired', :path => "#{rnPrefix}/Libraries/RCTRequired"
   pod 'RCTTypeSafety', :path => "#{rnPrefix}/Libraries/TypeSafety"
   pod 'React', :path => "#{rnPrefix}/"
   pod 'React-Core', :path => "#{rnPrefix}/"
+  pod 'React-Core/DevSupport', :path => "#{rnPrefix}/"
+  pod 'React-Core/RCTWebSocket', :path => "#{rnPrefix}/"
   pod 'React-CoreModules', :path => "#{rnPrefix}/React/CoreModules"
+  pod 'React-cxxreact', :path => "#{rnPrefix}/ReactCommon/cxxreact"
+  pod 'React-jsi', :path => "#{rnPrefix}/ReactCommon/jsi"
+  pod 'React-jsiexecutor', :path => "#{rnPrefix}/ReactCommon/jsiexecutor"
+  pod 'React-jsinspector', :path => "#{rnPrefix}/ReactCommon/jsinspector"
   pod 'React-RCTActionSheet', :path => "#{rnPrefix}/Libraries/ActionSheetIOS"
   pod 'React-RCTAnimation', :path => "#{rnPrefix}/Libraries/NativeAnimation"
   pod 'React-RCTBlob', :path => "#{rnPrefix}/Libraries/Blob"
@@ -23,18 +32,10 @@ target 'tube' do
   pod 'React-RCTSettings', :path => "#{rnPrefix}/Libraries/Settings"
   pod 'React-RCTText', :path => "#{rnPrefix}/Libraries/Text"
   pod 'React-RCTVibration', :path => "#{rnPrefix}/Libraries/Vibration"
-  pod 'React-Core/RCTWebSocket', :path => "#{rnPrefix}/"
-  pod 'React-Core/DevSupport', :path => "#{rnPrefix}/"
-  pod 'React-cxxreact', :path => "#{rnPrefix}/ReactCommon/cxxreact"
-  pod 'React-jsi', :path => "#{rnPrefix}/ReactCommon/jsi"
-  pod 'React-jsiexecutor', :path => "#{rnPrefix}/ReactCommon/jsiexecutor"
-  pod 'React-jsinspector', :path => "#{rnPrefix}/ReactCommon/jsinspector"
   pod 'ReactCommon/jscallinvoker', :path => "#{rnPrefix}/ReactCommon"
   pod 'ReactCommon/turbomodule/core', :path => "#{rnPrefix}/ReactCommon"
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
   pod 'Yoga', :path => "#{rnPrefix}/ReactCommon/yoga"
-  pod 'DoubleConversion', :podspec => "#{rnPrefix}/third-party-podspecs/DoubleConversion.podspec"
-  pod 'glog', :podspec => "#{rnPrefix}/third-party-podspecs/glog.podspec"
-  pod 'Folly', :podspec => "#{rnPrefix}/third-party-podspecs/Folly.podspec"
 
   # Other native modules
 
