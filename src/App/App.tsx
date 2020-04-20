@@ -1,6 +1,6 @@
 import React from "react";
-import {CameraScreen} from "./src";
-import {ImageScreen} from "./src";
+import {CameraScreen} from "../CameraScreen";
+import {ImageScreen} from "../ImageScreen";
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';

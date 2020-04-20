@@ -4,7 +4,7 @@ import {Camera, CameraCapturedPicture} from "expo-camera";
 import {Text, TouchableOpacity, View} from "react-native";
 import {askAsync, CAMERA} from "expo-permissions";
 import {RouteProp} from "@react-navigation/native";
-import {ScreenStack} from "../../App";
+import {ScreenStack} from "../App";
 import {StackNavigationProp} from "@react-navigation/stack";
 import * as tensorflow from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
