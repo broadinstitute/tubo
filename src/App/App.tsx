@@ -1,7 +1,7 @@
 import React from "react";
 import {CameraScreen} from "../CameraScreen";
 import {ImageScreen} from "../ImageScreen";
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 export type ScreenStack = {
@@ -13,7 +13,7 @@ const Stack = createStackNavigator<ScreenStack>();
 
 export const App = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={DarkTheme}>
       <Stack.Navigator initialRouteName="Camera">
         <Stack.Screen name="Camera" component={CameraScreen} />
         <Stack.Screen name="Image" component={ImageScreen}/>
