@@ -37,8 +37,8 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
     };
 
     request()
-      .catch(() => {
-
+      .catch((error) => {
+        console.log(error)
       });
 
     const prepare = async () => {
@@ -46,8 +46,8 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
     };
 
     prepare()
-      .catch(() => {
-
+      .catch((error) => {
+        console.log(error)
       })
       .then(() => {
         setReady(!ready);
@@ -64,22 +64,20 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
 
         const photo: CameraCapturedPicture = await ref.current.takePictureAsync(options);
 
-        navigation.navigate('Image', {photo: photo});
+        navigation.navigate('Image', {uri: photo.uri});
       }
     };
 
     capture()
-      .catch(() => {
-
+      .catch((error) => {
+        console.log(error)
       })
       .then(() => {
         setPressed(false);
       });
   }, [pressed]);
 
-  if (!permission) {
-    return <View />;
-  } else {
+  if (permission) {
     return (
       <View style={style.container}>
         <Camera ref={ref} style={style.preview} type={type}/>
@@ -91,5 +89,7 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
         </View>
       </View>
     );
+  } else {
+    return <View />;
   }
 };

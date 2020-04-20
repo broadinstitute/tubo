@@ -9,10 +9,10 @@ import {style} from "./ImageScreen.style";
 type ImageScreenProps = {
   navigation: StackNavigationProp<ScreenStack, 'Image'>;
   route: RouteProp<ScreenStack, 'Image'>;
-  src: CameraCapturedPicture;
 };
 
-export const ImageScreen = ({ navigation, route, src }: ImageScreenProps) => {
-  return <Image source={{uri: 'https://picsum.photos/256/256' }} style={style.image}/>;
-};
+export const ImageScreen = ({ route }: ImageScreenProps) => {
+  const { uri } = route.params;
 
+  return <Image source={{uri: uri }} style={style.image}/>;
+};
