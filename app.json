@@ -1,0 +1,17 @@
+{
+  "name": "tube",
+  "displayName": "tube",
+  "expo": {
+    "name": "Tube",
+    "slug": "tube",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
