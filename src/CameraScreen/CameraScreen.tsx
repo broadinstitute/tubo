@@ -1,29 +1,20 @@
 import React, {useEffect, useState} from "react";
 import {Camera} from "expo-camera";
-import {Platform, Text, TouchableOpacity, View} from "react-native";
+import {Platform, View} from "react-native";
 import {askAsync, CAMERA} from "expo-permissions";
-import {RouteProp} from "@react-navigation/native";
-import {ScreenStack} from "../App";
-import {StackNavigationProp} from "@react-navigation/stack";
 import * as tensorflow from '@tensorflow/tfjs';
 import {style} from "./CameraScreen.style";
 import {cameraWithTensors} from '@tensorflow/tfjs-react-native';
 import {DetectedObject} from '@tensorflow-models/coco-ssd';
-import {CLASSES} from "@tensorflow-models/coco-ssd/dist/classes";
-import Svg, {G, Rect} from "react-native-svg";
+import Svg, {G, Rect, Text} from "react-native-svg";
 
-type CameraScreenProps = {
-  navigation: StackNavigationProp<ScreenStack, 'Camera'>;
-  route: RouteProp<ScreenStack, 'Camera'>;
-};
+
+const C = 152;
+const R = 200;
 
 const ORIGIN = 'https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v2/1/default/1';
 
 const TensorCamera = cameraWithTensors(Camera);
-
-const config = {
-
-};
 
 const buildDetectedObjects = (width: number, height: number, boxes: Float32Array, scores: number[], indexes: Float32Array, classes: number[]): DetectedObject[] => {
   const count = indexes.length;
@@ -43,7 +34,7 @@ const buildDetectedObjects = (width: number, height: number, boxes: Float32Array
     bbox[3] = maxY - minY;
     objects.push({
       bbox: bbox as [number, number, number, number],
-      class: CLASSES[classes[indexes[i]] + 1].displayName,
+      class: '',
       score: scores[indexes[i]]
     });
   }
@@ -69,19 +60,13 @@ const calculateMaxScores = (scores: Float32Array, numBoxes: number, numClasses: 
   return [maxes, classes];
 };
 
-export const CameraScreen = ({navigation}: CameraScreenProps) => {
+export const CameraScreen = () => {
   const [detections, setDetections] = useState<DetectedObject[]>([]);
   const [graph, setGraph] = useState<tensorflow.GraphModel | null>(null);
   const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
   const [permission, setPermission] = useState<boolean | null>(null);
 
   const scaleX = Platform.OS === "ios" ? 1 : -1;
-
-  useEffect(() => {
-    detections.forEach((detection) => {
-      console.info(detection);
-    })
-  });
   
   useEffect(() => {
     const f = async () => {
@@ -122,7 +107,7 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
               const indexTensor = tensorflow.tidy(() => {
                 const boxes2 = tensorflow.tensor2d(geometries, [geometries_shape[1], geometries_shape[3]]);
 
-                return tensorflow.image.nonMaxSuppression(boxes2, scores, 20, 0.01, 0.01);
+                return tensorflow.image.nonMaxSuppression(boxes2, scores, 10, 0.1, 0.1);
               });
 
               const indicies = indexTensor.dataSync() as Float32Array;
@@ -152,7 +137,7 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
           setDetections(detections);
         }
       })
-  }, [images]);
+  });
 
   const onReady = (images: IterableIterator<tensorflow.Tensor3D>) => {
     setImages(images);
@@ -203,8 +188,8 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
           cameraTextureWidth={texture.c}
           onReady={onReady}
           resizeDepth={3}
-          resizeHeight={224}
-          resizeWidth={224}
+          resizeHeight={R}
+          resizeWidth={C}
           style={style.camera}
           type={Camera.Constants.Type.back}
         />
@@ -213,16 +198,19 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
           <Svg
             height="100%"
             scaleX={scaleX}
-            viewBox={`0 0 ${224} ${224}`}
+            viewBox={`0 0 ${C} ${R}`}
             width="100%"
           >
             {detections.map((detection, index) => {
               return (
                 <G key={index}>
+                  <Text x={detection.bbox[0]} y={detection.bbox[1]}>Score</Text>
                   <Rect
-                    fill={'red'}
-                    fillOpacity={0.2}
+                    fillOpacity={0.0}
                     height={(detection.bbox[3] - detection.bbox[1])}
+                    strokeWidth={1}
+                    stroke={'blue'}
+                    strokeOpacity={1.0}
                     width={(detection.bbox[2] - detection.bbox[0])}
                     x={detection.bbox[0]}
                     y={detection.bbox[1]}

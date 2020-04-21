@@ -1,1 +1,1 @@
-export {App, ScreenStack} from "./App";
+export {App} from "./App";
