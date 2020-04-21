@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from "react";
-import {RNCamera} from "react-native-camera";
 import {Camera, CameraCapturedPicture} from "expo-camera";
 import {Platform, Text, TouchableOpacity, View} from "react-native";
 import {askAsync, CAMERA} from "expo-permissions";
@@ -26,23 +25,33 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
   const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
   const [permission, setPermission] = useState<boolean | null>(null);
   const [pressed, setPressed] = useState<boolean>(false);
-  const [ready, setReady] = useState<boolean>(false);
 
   useEffect(() => {
     const f = async () => {
       if (images) {
-        const image = images.next().value;
+        const image = await images.next().value;
 
-        const prediction = graph?.predict(image);
+        console.info(image);
 
-        console.info(prediction);
+        if (image) {
+          const inputs = {
+            image_tensor: tensorflow.expandDims(image, 0)
+          };
+
+          const prediction = await graph?.executeAsync(inputs) as Array<tensorflow.Tensor>;
+
+          const categories = prediction[0];
+          const geometries = prediction[1];
+
+          console.info(categories);
+        }
       }
     };
 
     f()
       .catch((error) => {
         console.error(error);
-      });
+      })
   }, [images]);
 
   const onReady = (images: IterableIterator<tensorflow.Tensor3D>) => {
@@ -54,48 +63,31 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
   };
 
   useEffect(() => {
-    const request = async () => {
+    const setup = async () => {
       const { status } = await askAsync(CAMERA);
 
       if (status === "granted") {
         setPermission(true);
       }
-    };
 
-    request()
-      .catch((error) => {
-        console.log(error)
-      });
-
-    const prepare = async () => {
       await tensorflow.ready();
-    };
 
-    prepare()
-      .catch((error) => {
-        console.log(error)
-      })
-      .then(() => {
-        setReady(!ready);
-      });
-
-    const open = async () => {
       const options = {
         fromTFHub: true,
         onProgress: (fraction: number) => {
-          console.log(fraction);
+          // console.info(fraction);
         }
       };
 
       return await tensorflow.loadGraphModel(resource, options);
     };
 
-    open()
+    setup()
       .then((graph) => {
         setGraph(graph);
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
       });
   }, []);
 
@@ -115,15 +107,15 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
 
     capture()
       .catch((error) => {
-        console.log(error)
+        console.error(error)
       })
       .then(() => {
         setPressed(false);
       });
-  }, [graph, pressed]);
+  }, [pressed]);
 
   let texture: {r: number; c: number;};
-  if (Platform.OS === 'ios') {
+  if (Platform.OS === "ios") {
     texture = {r: 1920, c: 1080,};
   } else {
     texture = {r: 1200, c: 1600,};
