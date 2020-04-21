@@ -77,40 +77,12 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
 
   const scaleX = Platform.OS === "ios" ? 1 : -1;
 
-  const SVGView = () => {
-    if (detections) {
-      const geometries = detections.map((detection, index) => {
-        const rectangle = (
-          <Rect
-            fill={'red'}
-            fillOpacity={0.2}
-            height={(detection.bbox[3] - detection.bbox[1])}
-            width={(detection.bbox[2] - detection.bbox[0])}
-            x={detection.bbox[0]}
-            y={detection.bbox[1]}
-          />
-        );
-
-        return <G key={index}>{rectangle}</G>;
-      });
-
-      return (
-        <View>
-          <Svg
-            height="100%"
-            scaleX={scaleX}
-            viewBox={`0 0 ${224} ${224}`}
-            width="100%"
-          >
-            {geometries}
-          </Svg>;
-        </View>
-      )
-    } else {
-      return <View/>;
-    }
-  };
-
+  useEffect(() => {
+    detections.forEach((detection) => {
+      console.info(detection);
+    })
+  });
+  
   useEffect(() => {
     const f = async () => {
       if (images) {
@@ -233,7 +205,7 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
           resizeDepth={3}
           resizeHeight={224}
           resizeWidth={224}
-          style={style.preview}
+          style={style.camera}
           type={Camera.Constants.Type.back}
         />
 
@@ -259,12 +231,6 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
               )
             })}
           </Svg>
-        </View>
-
-        <View>
-          <TouchableOpacity onPress={() => {}} style={style.capture}>
-            <Text>Snap</Text>
-          </TouchableOpacity>
         </View>
       </View>
     );
