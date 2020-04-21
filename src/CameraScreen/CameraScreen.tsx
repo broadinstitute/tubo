@@ -5,7 +5,6 @@ import {askAsync, CAMERA} from "expo-permissions";
 import * as tensorflow from '@tensorflow/tfjs';
 import {style} from "./CameraScreen.style";
 import {cameraWithTensors} from '@tensorflow/tfjs-react-native';
-import {DetectedObject} from '@tensorflow-models/coco-ssd';
 import Svg, {G, Rect, Text} from "react-native-svg";
 
 
@@ -16,30 +15,7 @@ const ORIGIN = 'https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v2/1/defau
 
 const TensorCamera = cameraWithTensors(Camera);
 
-const buildDetectedObjects = (width: number, height: number, boxes: Float32Array, scores: number[], indexes: Float32Array, classes: number[]): DetectedObject[] => {
-  const count = indexes.length;
-  const objects: DetectedObject[] = [];
-  for (let i = 0; i < count; i++) {
-    const bbox = [];
-    for (let j = 0; j < 4; j++) {
-      bbox[j] = boxes[indexes[i] * 4 + j];
-    }
-    const minY = bbox[0] * height;
-    const minX = bbox[1] * width;
-    const maxY = bbox[2] * height;
-    const maxX = bbox[3] * width;
-    bbox[0] = minX;
-    bbox[1] = minY;
-    bbox[2] = maxX - minX;
-    bbox[3] = maxY - minY;
-    objects.push({
-      bbox: bbox as [number, number, number, number],
-      class: '',
-      score: scores[indexes[i]]
-    });
-  }
-  return objects;
-};
+type BoundingBox = [number, number, number, number];
 
 const calculateMaxScores = (scores: Float32Array, numBoxes: number, numClasses: number): [number[], number[]] => {
   const maxes = [];
@@ -61,7 +37,7 @@ const calculateMaxScores = (scores: Float32Array, numBoxes: number, numClasses: 
 };
 
 export const CameraScreen = () => {
-  const [detections, setDetections] = useState<DetectedObject[]>([]);
+  const [detections, setDetections] = useState<BoundingBox[]>([]);
   const [graph, setGraph] = useState<tensorflow.GraphModel | null>(null);
   const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
   const [permission, setPermission] = useState<boolean | null>(null);
@@ -95,7 +71,7 @@ export const CameraScreen = () => {
               // console.info("categories: " + categories);
               // console.info("geometries: " + geometries);
 
-              const [scores, classes] = calculateMaxScores(categories, categories_shape[1], categories_shape[2]);
+              const [scores] = calculateMaxScores(categories, categories_shape[1], categories_shape[2]);
 
               // console.info("scores: " + scores);
               // console.info("classes: " + classes);
@@ -121,7 +97,29 @@ export const CameraScreen = () => {
               const r = x.shape[1];
               const c = x.shape[2];
 
-              return buildDetectedObjects(c, r, geometries, scores, indicies, classes);
+              const target: BoundingBox[] = [];
+
+              for (let i = 0; i < indicies.length; i++) {
+                const box = [];
+
+                for (let j = 0; j < 4; j++) {
+                  box[j] = geometries[indicies[i] * 4 + j];
+                }
+
+                const minY = box[0] * r;
+                const minX = box[1] * c;
+                const maxY = box[2] * r;
+                const maxX = box[3] * c;
+
+                box[0] = minX;
+                box[1] = minY;
+                box[2] = maxX - minX;
+                box[3] = maxY - minY;
+
+                target.push(box as BoundingBox);
+              }
+
+              return target;
             }
           }
         }
@@ -204,16 +202,16 @@ export const CameraScreen = () => {
             {detections.map((detection, index) => {
               return (
                 <G key={index}>
-                  <Text x={detection.bbox[0]} y={detection.bbox[1]}>Score</Text>
+                  <Text x={detection[0]} y={detection[1]}>Score</Text>
                   <Rect
                     fillOpacity={0.0}
-                    height={(detection.bbox[3] - detection.bbox[1])}
+                    height={(detection[3] - detection[1])}
                     strokeWidth={1}
                     stroke={'blue'}
                     strokeOpacity={1.0}
-                    width={(detection.bbox[2] - detection.bbox[0])}
-                    x={detection.bbox[0]}
-                    y={detection.bbox[1]}
+                    width={(detection[2] - detection[0])}
+                    x={detection[0]}
+                    y={detection[1]}
                   />
                 </G>
               )
