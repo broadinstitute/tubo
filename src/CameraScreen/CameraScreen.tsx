@@ -74,23 +74,42 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
   const [graph, setGraph] = useState<tensorflow.GraphModel | null>(null);
   const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
   const [permission, setPermission] = useState<boolean | null>(null);
-  const [rectangles, setRectangles] = useState<any[]>([]);
 
-  useEffect(() => {
-    const rects = detections.map((detection: DetectedObject, index: number) => {
-      return <Rect
-        fill={'red'}
-        fillOpacity={0.2}
-        height={(detection.bbox[3] - detection.bbox[1])}
-        key={index}
-        width={(detection.bbox[2] - detection.bbox[0])}
-        x={detection.bbox[0]}
-        y={detection.bbox[1]}
-      />;
-    });
+  const scaleX = Platform.OS === "ios" ? 1 : -1;
 
-    setRectangles(rects);
-  }, [detections]);
+  const SVGView = () => {
+    if (detections) {
+      const geometries = detections.map((detection, index) => {
+        const rectangle = (
+          <Rect
+            fill={'red'}
+            fillOpacity={0.2}
+            height={(detection.bbox[3] - detection.bbox[1])}
+            width={(detection.bbox[2] - detection.bbox[0])}
+            x={detection.bbox[0]}
+            y={detection.bbox[1]}
+          />
+        );
+
+        return <G key={index}>{rectangle}</G>;
+      });
+
+      return (
+        <View>
+          <Svg
+            height="100%"
+            scaleX={scaleX}
+            viewBox={`0 0 ${224} ${224}`}
+            width="100%"
+          >
+            {geometries}
+          </Svg>;
+        </View>
+      )
+    } else {
+      return <View/>;
+    }
+  };
 
   useEffect(() => {
     const f = async () => {
@@ -131,7 +150,7 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
               const indexTensor = tensorflow.tidy(() => {
                 const boxes2 = tensorflow.tensor2d(geometries, [geometries_shape[1], geometries_shape[3]]);
 
-                return tensorflow.image.nonMaxSuppression(boxes2, scores, 20, 0.1, 0.1);
+                return tensorflow.image.nonMaxSuppression(boxes2, scores, 20, 0.01, 0.01);
               });
 
               const indicies = indexTensor.dataSync() as Float32Array;
@@ -218,11 +237,27 @@ export const CameraScreen = ({navigation}: CameraScreenProps) => {
           type={Camera.Constants.Type.back}
         />
 
-        <View>
-          <Svg height='100%' viewBox={`0 0 224 224`} width='100%'>
-            <G>
-              {rectangles}
-            </G>
+        <View style={style.predictions}>
+          <Svg
+            height="100%"
+            scaleX={scaleX}
+            viewBox={`0 0 ${224} ${224}`}
+            width="100%"
+          >
+            {detections.map((detection, index) => {
+              return (
+                <G key={index}>
+                  <Rect
+                    fill={'red'}
+                    fillOpacity={0.2}
+                    height={(detection.bbox[3] - detection.bbox[1])}
+                    width={(detection.bbox[2] - detection.bbox[0])}
+                    x={detection.bbox[0]}
+                    y={detection.bbox[1]}
+                  />
+                </G>
+              )
+            })}
           </Svg>
         </View>
 

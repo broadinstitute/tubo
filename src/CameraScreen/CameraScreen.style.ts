@@ -20,4 +20,15 @@ export const style = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
+  predictions: {
+    borderColor: 'black',
+    borderRadius: 0,
+    borderWidth: 1,
+    height: 800/2,
+    left: 50,
+    position:'absolute',
+    top: 100,
+    width: 600/2,
+    zIndex: 20,
+  },
 });
