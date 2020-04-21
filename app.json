@@ -11,7 +11,7 @@
       "web"
     ],
     "assetBundlePatterns": [
-      "**/*"
+      "assets/models/*"
     ]
   }
 }
