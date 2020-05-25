@@ -3,7 +3,7 @@ import { Camera } from "expo-camera";
 import { Platform, View } from "react-native";
 import { askAsync, CAMERA } from "expo-permissions";
 import * as tensorflow from "@tensorflow/tfjs";
-import { style } from "./CameraScreen.style";
+import { style } from "./style";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 import Svg, { G, Rect, Text } from "react-native-svg";
 

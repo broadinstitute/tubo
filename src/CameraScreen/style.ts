@@ -6,8 +6,6 @@ export const style = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 5,
     flex: 0,
-    margin: 20,
-    padding: 15,
     paddingHorizontal: 20
   },
   camera: {
