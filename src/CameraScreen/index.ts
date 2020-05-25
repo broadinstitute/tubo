@@ -1,1 +1,1 @@
-export {CameraScreen} from "./CameraScreen";
+export { CameraScreen } from "./CameraScreen";

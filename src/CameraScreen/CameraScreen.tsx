@@ -1,23 +1,27 @@
-import React, {useEffect, useState} from "react";
-import {Camera} from "expo-camera";
-import {Platform, View} from "react-native";
-import {askAsync, CAMERA} from "expo-permissions";
-import * as tensorflow from '@tensorflow/tfjs';
-import {style} from "./CameraScreen.style";
-import {cameraWithTensors} from '@tensorflow/tfjs-react-native';
-import Svg, {G, Rect, Text} from "react-native-svg";
-
+import React, { useEffect, useState } from "react";
+import { Camera } from "expo-camera";
+import { Platform, View } from "react-native";
+import { askAsync, CAMERA } from "expo-permissions";
+import * as tensorflow from "@tensorflow/tfjs";
+import { style } from "./CameraScreen.style";
+import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+import Svg, { G, Rect, Text } from "react-native-svg";
 
 const C = 152;
 const R = 200;
 
-const ORIGIN = 'https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v2/1/default/1';
+const ORIGIN =
+  "https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v2/1/default/1";
 
 const TensorCamera = cameraWithTensors(Camera);
 
 type BoundingBox = [number, number, number, number];
 
-const calculateMaxScores = (scores: Float32Array, numBoxes: number, numClasses: number): [number[], number[]] => {
+const calculateMaxScores = (
+  scores: Float32Array,
+  numBoxes: number,
+  numClasses: number
+): [number[], number[]] => {
   const maxes = [];
   const classes = [];
 
@@ -36,14 +40,14 @@ const calculateMaxScores = (scores: Float32Array, numBoxes: number, numClasses: 
   return [maxes, classes];
 };
 
-export const CameraScreen = () => {
+export const CameraScreen: () => JSX.Element = () => {
   const [detections, setDetections] = useState<BoundingBox[]>([]);
   const [graph, setGraph] = useState<tensorflow.GraphModel | null>(null);
   const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
   const [permission, setPermission] = useState<boolean | null>(null);
 
   const scaleX = Platform.OS === "ios" ? 1 : -1;
-  
+
   useEffect(() => {
     const f = async () => {
       if (images) {
@@ -53,7 +57,7 @@ export const CameraScreen = () => {
           const x = image.expandDims();
 
           if (graph) {
-            const y = await graph.executeAsync(x) as tensorflow.Tensor[];
+            const y = (await graph.executeAsync(x)) as tensorflow.Tensor[];
 
             // console.info("y: " + y);
 
@@ -71,7 +75,11 @@ export const CameraScreen = () => {
               // console.info("categories: " + categories);
               // console.info("geometries: " + geometries);
 
-              const [scores] = calculateMaxScores(categories, categories_shape[1], categories_shape[2]);
+              const [scores] = calculateMaxScores(
+                categories,
+                categories_shape[1],
+                categories_shape[2]
+              );
 
               // console.info("scores: " + scores);
               // console.info("classes: " + classes);
@@ -81,9 +89,18 @@ export const CameraScreen = () => {
               await tensorflow.setBackend("cpu");
 
               const indexTensor = tensorflow.tidy(() => {
-                const boxes2 = tensorflow.tensor2d(geometries, [geometries_shape[1], geometries_shape[3]]);
+                const boxes2 = tensorflow.tensor2d(geometries, [
+                  geometries_shape[1],
+                  geometries_shape[3]
+                ]);
 
-                return tensorflow.image.nonMaxSuppression(boxes2, scores, 10, 0.1, 0.1);
+                return tensorflow.image.nonMaxSuppression(
+                  boxes2,
+                  scores,
+                  10,
+                  0.1,
+                  0.1
+                );
               });
 
               const indicies = indexTensor.dataSync() as Float32Array;
@@ -134,7 +151,7 @@ export const CameraScreen = () => {
         if (detections) {
           setDetections(detections);
         }
-      })
+      });
   });
 
   const onReady = (images: IterableIterator<tensorflow.Tensor3D>) => {
@@ -166,61 +183,64 @@ export const CameraScreen = () => {
         setGraph(graph);
       })
       .catch((error) => {
-        console.error(error)
+        console.error(error);
       });
   }, []);
 
-  let texture: {r: number; c: number;};
+  let texture: { r: number; c: number };
   if (Platform.OS === "ios") {
-    texture = {r: 1920, c: 1080,};
+    texture = { r: 1920, c: 1080 };
   } else {
-    texture = {r: 1200, c: 1600,};
+    texture = { r: 1200, c: 1600 };
   }
 
-  if (permission) {
-    return (
-      <View style={style.container}>
-        <TensorCamera
-          autorender
-          cameraTextureHeight={texture.r}
-          cameraTextureWidth={texture.c}
-          onReady={onReady}
-          resizeDepth={3}
-          resizeHeight={R}
-          resizeWidth={C}
-          style={style.camera}
-          type={Camera.Constants.Type.back}
-        />
-
-        <View style={style.predictions}>
-          <Svg
-            height="100%"
-            scaleX={scaleX}
-            viewBox={`0 0 ${C} ${R}`}
-            width="100%"
-          >
-            {detections.map((detection, index) => {
-              return (
-                <G key={index}>
-                  <Text x={detection[0]} y={detection[1]}>Score</Text>
-                  <Rect
-                    fillOpacity={0.0}
-                    height={(detection[3] - detection[1])}
-                    strokeWidth={1}
-                    stroke={'blue'}
-                    strokeOpacity={1.0}
-                    width={(detection[2] - detection[0])}
-                    x={detection[0]}
-                    y={detection[1]}
-                  />
-                </G>
-              )
-            })}
-          </Svg>
-        </View>
-      </View>
-    );
-  } else {
+  if (!permission) {
+    // TODO: Add note about missing camera permissions.
     return <View />;
   }
+
+  return (
+    <View style={style.container}>
+      <TensorCamera
+        autorender
+        cameraTextureHeight={texture.r}
+        cameraTextureWidth={texture.c}
+        onReady={onReady}
+        resizeDepth={3}
+        resizeHeight={R}
+        resizeWidth={C}
+        style={style.camera}
+        type={Camera.Constants.Type.back}
+      />
+
+      <View style={style.predictions}>
+        <Svg
+          height="100%"
+          scaleX={scaleX}
+          viewBox={`0 0 ${C} ${R}`}
+          width="100%"
+        >
+          {detections.map((detection, index) => {
+            return (
+              <G key={index}>
+                <Text x={detection[0]} y={detection[1]}>
+                  Score
+                </Text>
+                <Rect
+                  fillOpacity={0.0}
+                  height={detection[3] - detection[1]}
+                  strokeWidth={1}
+                  stroke={"blue"}
+                  strokeOpacity={1.0}
+                  width={detection[2] - detection[0]}
+                  x={detection[0]}
+                  y={detection[1]}
+                />
+              </G>
+            );
+          })}
+        </Svg>
+      </View>
+    </View>
+  );
 };
