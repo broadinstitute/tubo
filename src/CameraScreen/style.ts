@@ -1,6 +1,13 @@
 import { StyleSheet } from "react-native";
 
 export const style = StyleSheet.create({
+  app: {
+    backgroundColor: "#fff",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    width: "100%"
+  },
   capture: {
     alignSelf: "center",
     backgroundColor: "#fff",
@@ -9,22 +16,25 @@ export const style = StyleSheet.create({
     paddingHorizontal: 20
   },
   camera: {
-    borderColor: "blue",
-    borderRadius: 0,
-    borderWidth: 3,
-    height: 800 / 2,
+    bottom: 0,
+    left: 0,
     position: "absolute",
-    width: "50%",
+    right: 0,
+    top: 0,
     zIndex: 1
   },
-  container: {
-    alignItems: "center",
-    backgroundColor: "#fff",
+  cameraContainer: {
     display: "flex",
-    flexDirection: "column",
-    height: "100%",
-    justifyContent: "center",
+    height: "50%",
     width: "100%"
+  },
+  controls: {
+    padding: 24
+  },
+  header: {
+    color: "black",
+    fontSize: 42,
+    fontWeight: "900"
   },
   preview: {
     alignItems: "center",
@@ -32,14 +42,8 @@ export const style = StyleSheet.create({
     justifyContent: "flex-end"
   },
   predictions: {
-    borderColor: "blue",
-    borderRadius: 0,
-    borderWidth: 1,
-    height: 800 / 2,
-    left: 50,
-    position: "absolute",
-    top: 100,
-    width: 600 / 2,
-    zIndex: 20
+    height: "100%",
+    width: "100%",
+    zIndex: 19
   }
 });
