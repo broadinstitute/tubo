@@ -1,6 +1,30 @@
 import React from "react";
-import CameraScreen from "../CameraScreen";
+import * as tensorflow from "@tensorflow/tfjs";
+import { View } from "react-native";
+
+import styles from "./styles";
+import Camera from "../Camera";
+import Detections from "../Detections";
+/* import Readout from "../Readout"; */
+/* import Controls from "../Controls"; */
 
 export default function App() {
-  return <CameraScreen />;
+  const [cameraPermission, setCameraPermission] = React.useState(false);
+  const [images, setImages] = React.useState<
+    IterableIterator<tensorflow.Tensor3D>
+  >();
+
+  return (
+    <View style={styles.app}>
+      <View style={styles.cameraContainer}>
+        <Camera
+          cameraPermission={cameraPermission}
+          setCameraPermission={setCameraPermission}
+          setImages={setImages}
+        />
+        <Detections images={images} />
+      </View>
+      {/* <Controls /> */}
+    </View>
+  );
 }
