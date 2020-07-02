@@ -6,12 +6,9 @@ import { askAsync, CAMERA } from "expo-permissions";
 type BoundingBox = [number, number, number, number];
 
 interface Props {
-  images?: IterableIterator<tensorflow.Tensor3D>;
+  images: IterableIterator<tensorflow.Tensor3D> | undefined;
+  graph: tensorflow.GraphModel;
 }
-
-// TODO: Make this an env variable
-const ORIGIN =
-  "https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v2/1/default/1";
 
 function calculateMaxScores(
   scores: Float32Array,
@@ -79,7 +76,6 @@ async function findDetections(
   const indicies = indexTensor.dataSync() as Float32Array;
   indexTensor.dispose();
   await tensorflow.setBackend(previousBackend);
-  // console.info("indicies:\n" + indicies);
 
   const r = x.shape[1];
   const c = x.shape[2];
@@ -118,51 +114,10 @@ function useDetections(
   }, [images, graph]);
 }
 
-function useGraph() {
-  const [graph, setGraph] = React.useState<tensorflow.GraphModel | null>(null);
-
-  React.useEffect(() => {
-    const setup = async () => {
-      const { status } = await askAsync(CAMERA);
-
-      if (status !== "granted") {
-        return null;
-      }
-
-      await tensorflow.ready();
-
-      const options = {
-        fromTFHub: true,
-        onProgress: (loading: number) => {
-          // Log model loading %
-          console.info({ loading });
-        }
-      };
-
-      /* return await tensorflow.loadGraphModel(ORIGIN, options); */
-    };
-
-    setup()
-      .then((graph) => {
-        /* console.error({ graph }); */
-        /* setGraph(graph); */
-      })
-      .catch((error) => {
-        console.info(`Error!: ${error}`);
-      });
-  }, []);
-
-  return graph;
-}
-
 export default function Detections(props: Props): JSX.Element {
-  const { images } = props;
-
-  const graph = useGraph();
-  const detections = useDetections(images, graph);
-
-  if (!graph) {
-  }
+  const { images, graph } = props;
+  /* const detections = useDetections(images, graph); */
+  console.info({ graph });
 
   return <Text>Detections</Text>;
   /* <View */

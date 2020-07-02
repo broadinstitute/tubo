@@ -133,6 +133,7 @@ function Camera(props: Props): JSX.Element {
   useEffect(() => {
     const setup = async () => {
       const { status } = await askAsync(CAMERA);
+      console.info({ status });
 
       setCameraPermission(status === "granted");
     };

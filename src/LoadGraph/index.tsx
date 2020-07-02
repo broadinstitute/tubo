@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, View } from "react-native";
+import { Animated, Text, View } from "react-native";
 import * as tensorflow from "@tensorflow/tfjs";
 import styles from "./styles";
 
@@ -28,6 +28,9 @@ export default function LoadGraph(props: Props): JSX.Element {
 
       const graph = await tensorflow.loadGraphModel(ORIGIN, options);
 
+      // FIXME: Once this is done and `graph` is passed as a prop, logged to
+      // the console, or interacted with in any way, the application will run
+      // out of memory.
       setGraph(graph);
     };
 

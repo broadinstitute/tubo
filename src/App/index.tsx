@@ -28,6 +28,7 @@ export default function App() {
           setCameraPermission={setCameraPermission}
           setImages={setImages}
         />
+        {/* FIXME: Once memory issues are fixed, uncommenting this should work */}
         {/* <Detections images={images} graph={graph} /> */}
       </View>
       {/* <Controls /> */}
