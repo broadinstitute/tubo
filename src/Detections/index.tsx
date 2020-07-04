@@ -116,8 +116,7 @@ function useDetections(
 
 export default function Detections(props: Props): JSX.Element {
   const { images, graph } = props;
-  /* const detections = useDetections(images, graph); */
-  console.info({ graph });
+  const detections = useDetections(images, graph);
 
   return <Text>Detections</Text>;
   /* <View */

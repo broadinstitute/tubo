@@ -29,7 +29,7 @@ export default function App() {
           setImages={setImages}
         />
         {/* FIXME: Once memory issues are fixed, uncommenting this should work */}
-        {/* <Detections images={images} graph={graph} /> */}
+        <Detections images={images} graph={graph} />
       </View>
       {/* <Controls /> */}
     </View>
