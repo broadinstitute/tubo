@@ -101,6 +101,7 @@ async function findDetections(
     target.push(box as BoundingBox);
   }
 
+  console.info({ target });
   return target;
 }
 

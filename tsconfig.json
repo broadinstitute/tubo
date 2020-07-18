@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
     "jsx": "react-native",
     "lib": ["dom", "es5", "es6"],
     "moduleResolution": "node",

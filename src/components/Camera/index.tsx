@@ -39,6 +39,7 @@ const calculateMaxScores = (
 
 interface Props {
   cameraPermission: boolean;
+  children: JSX.Element;
   setCameraPermission: (permission: boolean) => void;
   setImages: (images: IterableIterator<tensorflow.Tensor3D>) => void;
 }
@@ -156,6 +157,12 @@ function Camera(props: Props): JSX.Element {
   /* } */
 
   return (
+    <ExpoCamera style={style.camera} type={ExpoCamera.Constants.Type.back}>
+      {props.children}
+    </ExpoCamera>
+  );
+
+  return (
     <TensorCamera
       autorender
       cameraTextureHeight={texture.r}
@@ -166,7 +173,9 @@ function Camera(props: Props): JSX.Element {
       resizeWidth={C}
       style={style.camera}
       type={ExpoCamera.Constants.Type.back}
-    />
+    >
+      {props.children}
+    </TensorCamera>
   );
 }
 
