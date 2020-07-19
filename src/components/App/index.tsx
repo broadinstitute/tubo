@@ -16,9 +16,9 @@ export default function App() {
     IterableIterator<tensorflow.Tensor3D>
   >();
 
-  /* if (!graph) { */
-  /*   return <LoadGraph setGraph={setGraph} />; */
-  /* } */
+  if (!graph) {
+    return <LoadGraph setGraph={setGraph} />;
+  }
 
   return (
     <Camera
