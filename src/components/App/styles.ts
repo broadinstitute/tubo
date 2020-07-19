@@ -3,8 +3,12 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   app: {
     // backgroundColor: "#fff",
-    backgroundColor: "transparent",
-    flex: 1
+    backgroundColor: "white",
+    bottom: 0,
+    height: "40%",
+    left: 0,
+    position: "absolute",
+    right: 0
   },
   capture: {
     // alignSelf: "center",

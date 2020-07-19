@@ -46,6 +46,7 @@ interface Props {
 
 function Camera(props: Props): JSX.Element {
   const { setCameraPermission, setImages } = props;
+  const [isReady, setIsReady] = useState(false);
 
   /* useEffect(() => { */
   /*   const f = async () => { */
@@ -128,6 +129,7 @@ function Camera(props: Props): JSX.Element {
   /* }); */
 
   const onReady = (images: IterableIterator<tensorflow.Tensor3D>) => {
+    setIsReady(true);
     setImages(images);
   };
 
@@ -157,14 +159,8 @@ function Camera(props: Props): JSX.Element {
   /* } */
 
   return (
-    <ExpoCamera style={style.camera} type={ExpoCamera.Constants.Type.back}>
-      {props.children}
-    </ExpoCamera>
-  );
-
-  return (
     <TensorCamera
-      autorender
+      autorender={isReady}
       cameraTextureHeight={texture.r}
       cameraTextureWidth={texture.c}
       onReady={onReady}

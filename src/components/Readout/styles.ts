@@ -1,8 +1,16 @@
 import { StyleSheet } from "react-native";
+import tailwind from "tailwind-rn";
 
 export default StyleSheet.create({
   readout: {
-    backgroundColor: "transparent",
-    flex: 1
+    ...tailwind(`
+      absolute
+      bg-white
+      bottom-0
+      left-0
+      p-4
+      right-0
+    `),
+    height: "35%"
   }
 });

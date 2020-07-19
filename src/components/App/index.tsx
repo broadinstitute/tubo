@@ -1,6 +1,6 @@
 import React from "react";
 import * as tensorflow from "@tensorflow/tfjs";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 import styles from "./styles";
 import Camera from "components/Camera";
@@ -26,12 +26,7 @@ export default function App() {
       setCameraPermission={setCameraPermission}
       setImages={setImages}
     >
-      <View style={styles.app}>
-        <View style={styles.cameraContainer}>
-          {/* <Detections images={images} graph={graph} /> */}
-        </View>
-        <Readout />
-      </View>
+      <Readout />
     </Camera>
   );
 }
