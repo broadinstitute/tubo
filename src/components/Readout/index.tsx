@@ -6,9 +6,7 @@ import styles from "./styles";
 export default function Readout() {
   return (
     <View style={styles.readout}>
-      <Text style={tailwind("text-2xl text-center font-extrabold")}>
-        Readout goes here
-      </Text>
+      <Text style={tailwind("text-2xl font-extrabold")}>Readout goes here</Text>
     </View>
   );
 }
