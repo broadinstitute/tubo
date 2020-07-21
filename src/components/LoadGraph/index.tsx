@@ -28,9 +28,6 @@ export default function LoadGraph(props: Props): JSX.Element {
 
       const graph = await tensorflow.loadGraphModel(ORIGIN, options);
 
-      // FIXME: Once this is done and `graph` is passed as a prop, logged to
-      // the console, or interacted with in any way, the application will run
-      // out of memory.
       setGraph(graph);
     };
 
