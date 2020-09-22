@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Camera } from "expo-camera";
-import { Text, Platform, View } from "react-native";
-import { askAsync, CAMERA } from "expo-permissions";
 import * as tensorflow from "@tensorflow/tfjs";
-import { style } from "./style";
-import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+import React, { useEffect, useState } from "react";
 import Svg, { G, Rect, Text as TextSVG } from "react-native-svg";
+import { Camera } from "expo-camera";
+import { Text, Platform, View, LayoutRectangle } from "react-native";
+import { askAsync, CAMERA } from "expo-permissions";
+import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+import { cameraScreenStyle } from "./CameraScreen.style";
 
 const C = 152;
 const R = 200;
@@ -40,7 +40,7 @@ const calculateMaxScores = (
   return [maxes, classes];
 };
 
-export default function CameraScreen(): JSX.Element {
+export const CameraScreen = () => {
   const [detections, setDetections] = useState<BoundingBox[]>([]);
   const [graph, setGraph] = useState<tensorflow.GraphModel | null>(null);
   const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
@@ -180,8 +180,8 @@ export default function CameraScreen(): JSX.Element {
   }
 
   return (
-    <View style={style.app}>
-      <View style={style.cameraContainer}>
+    <View style={cameraScreenStyle.app}>
+      <View style={cameraScreenStyle.cameraContainer}>
         <TensorCamera
           autorender
           cameraTextureHeight={texture.r}
@@ -190,11 +190,11 @@ export default function CameraScreen(): JSX.Element {
           resizeDepth={3}
           resizeHeight={R}
           resizeWidth={C}
-          style={style.camera}
+          style={cameraScreenStyle.camera}
           type={Camera.Constants.Type.back}
         />
         <View
-          style={style.predictions}
+          style={cameraScreenStyle.predictions}
           onLayout={({ nativeEvent }) =>
             setPredictionsCanvas(nativeEvent.layout)
           }
@@ -228,9 +228,9 @@ export default function CameraScreen(): JSX.Element {
           </Svg>
         </View>
       </View>
-      <View style={style.controls}>
-        <Text style={style.header}>Tubo</Text>
+      <View style={cameraScreenStyle.controls}>
+        <Text style={cameraScreenStyle.header}>Tubo</Text>
       </View>
     </View>
   );
-}
+};

@@ -1,17 +1,26 @@
 {
-  "name": "tube",
-  "displayName": "tube",
   "expo": {
-    "name": "Tube",
-    "slug": "tube",
+    "name": "tubo",
+    "slug": "tubo",
     "version": "1.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
     "assetBundlePatterns": [
-      "assets/models/*"
-    ]
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
   }
 }
