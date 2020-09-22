@@ -16,7 +16,7 @@ const TensorCamera = cameraWithTensors(Camera);
 
 type BoundingBox = [number, number, number, number];
 
-const cameraScreenStyle = StyleSheet.create({
+const style = StyleSheet.create({
   app: {
     backgroundColor: "#fff",
     display: "flex",
@@ -227,8 +227,8 @@ export const CameraScreen = () => {
   }
 
   return (
-    <View style={cameraScreenStyle.app}>
-      <View style={cameraScreenStyle.cameraContainer}>
+    <View style={style.app}>
+      <View style={style.cameraContainer}>
         <TensorCamera
           autorender
           cameraTextureHeight={texture.r}
@@ -237,11 +237,11 @@ export const CameraScreen = () => {
           resizeDepth={3}
           resizeHeight={R}
           resizeWidth={C}
-          style={cameraScreenStyle.camera}
+          style={style.camera}
           type={Camera.Constants.Type.back}
         />
         <View
-          style={cameraScreenStyle.predictions}
+          style={style.predictions}
           onLayout={({ nativeEvent }) =>
             setPredictionsCanvas(nativeEvent.layout)
           }
@@ -275,8 +275,8 @@ export const CameraScreen = () => {
           </Svg>
         </View>
       </View>
-      <View style={cameraScreenStyle.controls}>
-        <Text style={cameraScreenStyle.header}>Tubo</Text>
+      <View style={style.controls}>
+        <Text style={style.header}>Tubo</Text>
       </View>
     </View>
   );
